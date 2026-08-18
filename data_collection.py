@@ -7,7 +7,8 @@ EVENTS = 'all'
 pistols_and_thrifties = []
 round_2_decision = []
 
-vct_events = vlrdevapi.event.list(tier='vct', status='completed', return_all=True)
+vct_events = vlrdevapi.event.list(tier='vct', status='completed',
+                                  return_all=True)
 franchised_events = []
 
 event = vct_events.events[0]
@@ -26,24 +27,28 @@ if EVENTS == 'all':
 for event in events:
     matches = vlrdevapi.event(event.id).matches()
     for match in matches.matches:
-        games = vlrdevapi.series.info(match.match_id).games
+        match_id = match.match_id
+        games = vlrdevapi.series.info(match_id).games
 
         for game in games:
-            econ = vlrdevapi.series.economy(series_id=match.match_id, game_id=game.game_id)
+            econ = vlrdevapi.series.economy(series_id=match_id,
+                                            game_id=game.game_id)
             rounds = econ.rounds
 
             if len(rounds) > 0:
                 map_winner_pistols = 0
-                if vlrdevapi.series.info(match.match_id).team1.tag == econ.team1:
-                    team1ID = vlrdevapi.series.info(match.match_id).team1.id
-                    team2ID = vlrdevapi.series.info(match.match_id).team2.id
-                    team1_name = vlrdevapi.series.info(match.match_id).team1.tag
-                    team2_name = vlrdevapi.series.info(match.match_id).team2.tag
+                if (
+                    vlrdevapi.series.info(match_id).team1.tag == econ.team1
+                ):
+                    team1ID = vlrdevapi.series.info(match_id).team1.id
+                    team2ID = vlrdevapi.series.info(match_id).team2.id
+                    team1_name = vlrdevapi.series.info(match_id).team1.tag
+                    team2_name = vlrdevapi.series.info(match_id).team2.tag
                 else:
-                    team1ID = vlrdevapi.series.info(match.match_id).team2.id
-                    team2ID = vlrdevapi.series.info(match.match_id).team1.id
-                    team1_name = vlrdevapi.series.info(match.match_id).team2.tag
-                    team2_name = vlrdevapi.series.info(match.match_id).team1.tag
+                    team1ID = vlrdevapi.series.info(match_id).team2.id
+                    team2ID = vlrdevapi.series.info(match_id).team1.id
+                    team1_name = vlrdevapi.series.info(match_id).team2.tag
+                    team2_name = vlrdevapi.series.info(match_id).team1.tag
 
                 if rounds[-1].winner.name == team1_name:
                     map_winner_id = team1ID
@@ -120,10 +125,10 @@ for event in events:
                                 map_loser_thrifty_wins += 1
 
                 pistols_and_thrifties.append({
-                    'MatchID': match.match_id,
+                    'MatchID': match_id,
                     'GameID': game.game_id,
                     'Team Name': map_winner_name,
-                    'TeamID':map_winner_id,
+                    'TeamID': map_winner_id,
                     'Result': 'won',
                     'Pistols Won': map_winner_pistols,
                     'Potential Thrifties': map_winner_thrifty_rounds,
@@ -131,10 +136,10 @@ for event in events:
                 })
 
                 pistols_and_thrifties.append({
-                    'MatchID': match.match_id,
+                    'MatchID': match_id,
                     'GameID': game.game_id,
                     'Team Name': map_loser_name,
-                    'TeamID':map_loser_id,
+                    'TeamID': map_loser_id,
                     'Result': 'lost',
                     'Pistols Won': map_loser_pistols,
                     'Potential Thrifties': map_loser_thrifty_rounds,
@@ -161,9 +166,9 @@ for event in events:
                     decision = 'eco'
                 else:
                     decision = 'force'
-                
+
                 round_2_decision.append({
-                    'MatchID': match.match_id,
+                    'MatchID': match_id,
                     'GameID': game.game_id,
                     'Pistol Winner TeamID': pistol_winner_id,
                     'Pistol Winner Team': pistol_winner,
