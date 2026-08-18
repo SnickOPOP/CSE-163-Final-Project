@@ -10,6 +10,7 @@ def r2_round_wins(r2: pd.DataFrame) -> None:
         r2[columns_to_check].eq(r2['Pistol Loser Team'], axis=0).sum(axis=1)
     )
 
+
 def eda(pat: pd.DataFrame, r2: pd.DataFrame) -> None:
     print('Pistols and Thrifties:')
     print(pat.shape)
@@ -64,12 +65,95 @@ def eda(pat: pd.DataFrame, r2: pd.DataFrame) -> None:
     plt.savefig('eda_round_wins.png', bbox_inches='tight')
 
 
+def ques1_analysis(pat: pd.DataFrame) -> None:
+    print(pat.groupby('Pistols Won')['Result'].value_counts())
+
+    pistols_won_percentages = (
+            pat.groupby('Pistols Won')['Result']
+            .value_counts(normalize=True)
+            * 100
+    )
+
+    print(pistols_won_percentages)
+
+    pistols_won_percentages_graph = (
+        pat.groupby('Pistols Won')['Result']
+        .value_counts(normalize=True)
+        .unstack()
+        * 100
+    )
+
+    pistols_won_percentages_graph.plot(kind='bar', stacked=False)
+    plt.xticks(rotation=0)
+    plt.xlabel('Pistol Round Wins')
+    plt.ylabel('Percentages')
+    plt.title('Percentage of Games won by Pistol Round Wins')
+    plt.savefig('games_won_by_pistol_wins.png')
+
+
+def ques2_analysis(r2: pd.DataFrame) -> None:
+    print(r2.groupby('Decision')['Round Wins'].value_counts())
+
+    r2_percentages = (
+        r2.groupby('Decision')['Round Wins']
+        .value_counts(normalize=True)
+        * 100
+    )
+
+    print(r2_percentages)
+
+    r2_percentages_graph = (
+        r2.groupby('Decision')['Round Wins']
+        .value_counts(normalize=True)
+        .unstack()
+        * 100
+    )
+
+    r2_percentages_graph.plot(kind='bar', stacked=False)
+    plt.xticks(rotation=0)
+    plt.xlabel('Round 2 Decision')
+    plt.ylabel('Percentages')
+    plt.title(
+        'Percentage of Games where Amount of Rounds Won by Round 2 Decision'
+    )
+    plt.savefig('rounds_won_by_decision.png')
+
+
+def ques3_analysis(pat: pd.DataFrame) -> None:
+    print(pat.groupby('Thrifties Won')['Result'].value_counts())
+
+    thrifties_won_percentages = (
+            pat.groupby('Thrifties Won')['Result']
+            .value_counts(normalize=True)
+            * 100
+    )
+
+    print(thrifties_won_percentages)
+
+    thrifties_won_percentages_graph = (
+        pat.groupby('Thrifties Won')['Result']
+        .value_counts(normalize=True)
+        .unstack()
+        * 100
+    )
+
+    thrifties_won_percentages_graph.plot(kind='bar', stacked=False)
+    plt.xticks(rotation=0)
+    plt.xlabel('Thrifty Round Wins')
+    plt.ylabel('Percentages')
+    plt.title('Percentage of Games won by Thrifty Round Wins')
+    plt.savefig('games_won_by_thrifty_wins.png')
+
+
 def main():
     pat = pd.read_csv('pat_cleaned.csv')
     r2 = pd.read_csv('r2_cleaned.csv')
 
     r2_round_wins(r2)
     eda(pat, r2)
+    ques1_analysis(pat)
+    ques2_analysis(r2)
+    ques3_analysis(pat)
 
 
 if __name__ == '__main__':

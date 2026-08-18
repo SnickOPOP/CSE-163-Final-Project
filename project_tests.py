@@ -22,8 +22,6 @@ def test_missing_values(data: pd.DataFrame, name_col: str, id_col: str):
 
 
 def main():
-    df_pat = pd.read_csv(PAT_TEST_FILE)
-    df_r2 = pd.read_csv(R2_TEST_FILE)
     df_mv = pd.read_csv(MV_TEST_FILE)
 
     test_missing_values(df_mv, 'Name', 'ID')
